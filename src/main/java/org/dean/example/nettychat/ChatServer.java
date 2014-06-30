@@ -1,6 +1,7 @@
 package org.dean.example.nettychat;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -28,7 +29,8 @@ public class ChatServer {
                     .group(bossGroup, workGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ChatServerInitializer());
-            bootstrap.bind(port).sync().channel().closeFuture().sync();
+            ChannelFuture future = bootstrap.bind(port).sync();
+            future.channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();
             workGroup.shutdownGracefully();
